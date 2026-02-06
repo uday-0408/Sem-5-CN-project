@@ -94,8 +94,8 @@ export default function ErrorVisualizer() {
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Input Data (Binary)</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span className="text-slate-500 font-mono">0b</span>
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                    <span className="text-cyan-400 font-mono font-bold tracking-wider">0b</span>
                                 </div>
                                 <input
                                     type="text"
@@ -104,28 +104,61 @@ export default function ErrorVisualizer() {
                                         const val = e.target.value.replace(/[^01]/g, '');
                                         setData(val);
                                     }}
-                                    className="input-field pl-10 font-mono tracking-widest text-lg"
+                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl pl-12 pr-20 py-3 font-mono text-lg tracking-[0.2em] text-white placeholder-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
                                     placeholder="1010..."
                                     required
                                 />
-                                <div className="absolute inset-0 rounded-xl bg-indigo-500/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity duration-300"></div>
+                                <div className="absolute inset-y-0 right-2 flex items-center gap-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const len = Math.floor(Math.random() * 8) + 8; // 8-16 bits
+                                            let res = "";
+                                            for (let i = 0; i < len; i++) res += Math.random() > 0.5 ? "1" : "0";
+                                            setData(res);
+                                        }}
+                                        title="Generate Random"
+                                        className="p-1.5 text-slate-500 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    </button>
+                                    {data && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setData('')}
+                                            title="Clear"
+                                            className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex justify-between px-1">
+                                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Bit Length: {data.length}</span>
+                                <span className="text-[10px] text-indigo-400/70 font-mono">Binary Only</span>
                             </div>
                         </div>
 
                         {technique === 'crc' && (
                             <div className="space-y-2 animate-in slide-in-from-top-2 fade-in duration-300">
                                 <label className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Generator (Divisor)</label>
-                                <input
-                                    type="text"
-                                    value={generator}
-                                    onChange={(e) => {
-                                        const val = e.target.value.replace(/[^01]/g, '');
-                                        setGenerator(val);
-                                    }}
-                                    className="input-field font-mono tracking-widest text-lg"
-                                    placeholder="1001"
-                                    required
-                                />
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                        <span className="text-amber-500 font-mono font-bold tracking-wider">0b</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={generator}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/[^01]/g, '');
+                                            setGenerator(val);
+                                        }}
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl pl-12 pr-4 py-3 font-mono text-lg tracking-[0.2em] text-white placeholder-slate-700 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                                        placeholder="1001"
+                                        required
+                                    />
+                                </div>
                             </div>
                         )}
 
