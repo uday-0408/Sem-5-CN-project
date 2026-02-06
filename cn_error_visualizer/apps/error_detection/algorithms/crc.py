@@ -12,7 +12,8 @@ def mod2div(dividend, divisor, tracker=None, stage_name="Sender"):
     n = len(dividend)
     
     if tracker:
-        tracker.add_step(f"{stage_name}: Div Start", f"Dividend: {dividend}, Divisor: {divisor}, Initial Chunk: {tmp}")
+        tracker.add_step(f"{stage_name}: Div Start", f"Dividend: {dividend}, Divisor: {divisor}, Initial Chunk: {tmp}",
+                         state={"dividend": dividend, "divisor": divisor, "current_chunk": tmp, "action": "start"})
     
     while pick < n:
         if tmp[0] == '1':
@@ -25,7 +26,8 @@ def mod2div(dividend, divisor, tracker=None, stage_name="Sender"):
             
             if tracker:
                 tracker.add_step(f"{stage_name}: Step (XOR)", 
-                                 f"Current: {tmp} (Starts with 1). XOR {divisor} -> {result}. Pull down {next_bit} -> New: {new_tmp}")
+                                 f"Current: {tmp} (Starts with 1). XOR {divisor} -> {result}. Pull down {next_bit} -> New: {new_tmp}",
+                                 state={"current_chunk": tmp, "divisor": divisor, "xor_result": result, "next_bit": next_bit, "new_chunk": new_tmp, "action": "xor"})
             tmp = new_tmp
         else:
             # If leading bit is 0, we effectively XOR with 000...0 or just shift.
@@ -37,7 +39,8 @@ def mod2div(dividend, divisor, tracker=None, stage_name="Sender"):
             
             if tracker:
                 tracker.add_step(f"{stage_name}: Step (Skip)", 
-                                 f"Current: {tmp} (Starts with 0). No XOR (Shift). Pull down {next_bit} -> New: {new_tmp}")
+                                 f"Current: {tmp} (Starts with 0). No XOR (Shift). Pull down {next_bit} -> New: {new_tmp}",
+                                 state={"current_chunk": tmp, "divisor": divisor, "next_bit": next_bit, "new_chunk": new_tmp, "action": "skip"})
             tmp = new_tmp
             
         pick += 1
@@ -52,12 +55,14 @@ def mod2div(dividend, divisor, tracker=None, stage_name="Sender"):
         result = xor(divisor, tmp)
         remainder = result[1:]
         if tracker:
-            tracker.add_step(f"{stage_name}: Final Step", f"Current: {tmp}. XOR {divisor} -> {result}. Remainder: {remainder}")
+            tracker.add_step(f"{stage_name}: Final Step", f"Current: {tmp}. XOR {divisor} -> {result}. Remainder: {remainder}",
+                             state={"current_chunk": tmp, "divisor": divisor, "xor_result": result, "remainder": remainder, "action": "final_xor"})
         tmp = remainder
     else:
         remainder = tmp[1:]
         if tracker:
-            tracker.add_step(f"{stage_name}: Final Step", f"Current: {tmp}. Starts with 0. Remainder: {remainder}")
+            tracker.add_step(f"{stage_name}: Final Step", f"Current: {tmp}. Starts with 0. Remainder: {remainder}",
+                             state={"current_chunk": tmp, "remainder": remainder, "action": "final_skip"})
         tmp = remainder
 
     return tmp

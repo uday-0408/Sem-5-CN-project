@@ -24,7 +24,7 @@ def run_lrc(data, introduce_error=False):
         
     # Split into blocks
     blocks = [processed_data[i:i+block_size] for i in range(0, len(processed_data), block_size)]
-    tracker.add_step("Blocking", f"Data split into {len(blocks)} blocks: {blocks}")
+    tracker.add_step("Blocking", f"Data split into {len(blocks)} blocks: {blocks}", state={"blocks": blocks})
     
     # --- Sender Side ---
     lrc_bits = []
@@ -41,7 +41,8 @@ def run_lrc(data, introduce_error=False):
         
         parity = '1' if ones_count % 2 != 0 else '0'
         lrc_bits.append(parity)
-        tracker.add_step(f"Sender: Column {col}", f"Bits: {col_bits}. 1s count: {ones_count}. Parity: {parity}")
+        tracker.add_step(f"Sender: Column {col}", f"Bits: {col_bits}. 1s count: {ones_count}. Parity: {parity}",
+                         state={"highlight_col": col, "column_bits": col_bits, "count": ones_count, "parity_bit": parity, "blocks": blocks})
         
     lrc_block = "".join(lrc_bits)
     transmitted_data = processed_data + lrc_block

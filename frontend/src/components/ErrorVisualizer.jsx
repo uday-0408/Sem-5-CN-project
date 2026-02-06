@@ -73,8 +73,8 @@ export default function ErrorVisualizer() {
                                         type="button"
                                         onClick={() => setTechnique(t.id)}
                                         className={`relative group px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 border ${technique === t.id
-                                                ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/25 translate-y-[-1px]'
-                                                : 'bg-slate-800/30 border-slate-700/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200'
+                                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/25 translate-y-[-1px]'
+                                            : 'bg-slate-800/30 border-slate-700/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200'
                                             }`}
                                     >
                                         <div className="flex flex-col items-center gap-1">
@@ -182,7 +182,7 @@ export default function ErrorVisualizer() {
             {/* Right: Visualization */}
             <div className="lg:col-span-8">
                 {result ? (
-                    <ResultDisplay result={result} />
+                    <ResultDisplay result={result} technique={technique} />
                 ) : (
                     <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-slate-700/50 rounded-xl text-slate-500">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">

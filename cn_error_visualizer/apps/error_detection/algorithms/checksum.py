@@ -58,26 +58,30 @@ def run_checksum(data, introduce_error=False):
     # --- Sender Calculation ---
     current_sum = blocks[0]
     
-    tracker.add_step("Sender: Summation", f"Initial Sum = Block 0: {current_sum}")
+    tracker.add_step("Sender: Summation", f"Initial Sum = Block 0: {current_sum}", 
+                     state={"blocks": blocks, "current_sum": current_sum, "action": "init"})
     
     for i in range(1, len(blocks)):
         next_block = blocks[i]
         temp_sum, carry = full_adder(current_sum, next_block)
-        tracker.add_step(f"Sender: Add Block {i}", f"{current_sum} + {next_block} = {temp_sum}, Carry: {carry}")
+        tracker.add_step(f"Sender: Add Block {i}", f"{current_sum} + {next_block} = {temp_sum}, Carry: {carry}",
+                         state={"operand1": current_sum, "operand2": next_block, "result": temp_sum, "carry": carry, "action": "add"})
         
         while carry:
             # Wrap around carry
             # Add carry (which is 1) to sum
             carry_adder_input = '1'.zfill(block_size)
             s2, c2 = full_adder(temp_sum, carry_adder_input)
-            tracker.add_step("Sender: Wrap Carry", f"Wrapped carry: {temp_sum} + 1 = {s2}, New Carry: {c2}")
+            tracker.add_step("Sender: Wrap Carry", f"Wrapped carry: {temp_sum} + 1 = {s2}, New Carry: {c2}",
+                             state={"operand1": temp_sum, "carry_added": 1, "result": s2, "new_carry": c2, "action": "wrap"})
             temp_sum = s2
             carry = c2
         
         current_sum = temp_sum
         
     checksum = ones_complement(current_sum)
-    tracker.add_step("Sender: Complement", f"Sum: {current_sum} -> Checksum (1s Comp): {checksum}")
+    tracker.add_step("Sender: Complement", f"Sum: {current_sum} -> Checksum (1s Comp): {checksum}",
+                     state={"sum": current_sum, "checksum": checksum, "action": "complement"})
     
     transmitted_data = processed_data + checksum # Appended at end
     tracker.add_step("Sender: Finalize", f"Sent: {transmitted_data}")

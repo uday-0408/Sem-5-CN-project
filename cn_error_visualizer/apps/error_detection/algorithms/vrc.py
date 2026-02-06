@@ -11,9 +11,11 @@ def run_vrc(data, introduce_error=False):
     for i, bit in enumerate(data):
         if bit == '1':
             ones_count += 1
-            tracker.add_step(f"Sender: Bit {i}", f"Found '1'. Current count: {ones_count}")
+            tracker.add_step(f"Sender: Bit {i}", f"Found '1'. Current count: {ones_count}", 
+                             state={"index": i, "bit": bit, "count": ones_count, "action": "increment"})
         else:
-            tracker.add_step(f"Sender: Bit {i}", f"Found '0'. Current count: {ones_count}")
+            tracker.add_step(f"Sender: Bit {i}", f"Found '0'. Current count: {ones_count}",
+                             state={"index": i, "bit": bit, "count": ones_count, "action": "skip"})
             
     parity_bit = '1' if ones_count % 2 != 0 else '0'
     transmitted_data = data + parity_bit
